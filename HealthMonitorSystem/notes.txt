@@ -1,0 +1,58 @@
+libraries (picture)
+explaination of what the libraries are for ?
+
+software 
+snip of the src file
+main.c file 
+explain the function and how they working
+(explain the code)
+using small snips
+
+
+issues faced:
+vivado and vitis versions . when build the platform in vitis some stuff are missing in the parameter file.
+if u use example code, a lot of erros will happen. in older version 2022.1 no issue were face except for make file
+
+make file issue
+https://adaptivesupport.amd.com/s/article/75527?language=en_US
+i went to each pmod we used and searched for the makefile for it and updated it and regenrated the bitstream and built
+the platform
+
+
+memory issue
+https://adaptivesupport.amd.com/s/question/0D52E00006hpURGSA2/bram-size-limitation-to-be-used-as-the-microblaze95rev30-instruction-memory-viv20154-ac701v10?language=en_US
+i added new Bram controlles exactly similar to the ones genrated automatically by vivado block design
+I connected them and adjust some of the blocks related and make the connection.
+i went to the address editor and did right click then assign because those new blocks were not assigned.
+I manipulated the addressing of them in order to have the end of the old memory, connected to the start of the new
+added memory. 
+
+i reorginzed the other addresses for the stuff. i increased the size to 128k . 
+basically added new memory in concat and fixed any addressing issues that appears when selecting the 128k
+
+generated bit stream . updated the new wrapper file xsa in vivits and made a new project and copied the files from old
+application projet. i opened the lscript.ld file and assinged new memory range size for it with this line of code
+
+microblaze_0_local_memory_ilmb_bram_if_cntlr_Mem_microblaze_0_local_memory_dlmb_bram_if_cntlr_Mem : ORIGIN = 0x50, LENGTH = 0x3FB80
+old one was :
+   microblaze_0_local_memory_ilmb_bram_if_cntlr_Mem_microblaze_0_local_memory_dlmb_bram_if_cntlr_Mem : ORIGIN = 0x50, LENGTH = 0x1FFB0
+
+
+output:
+the temperture value if it is normal it will pritned normally in the serial monitor slowly. ever 1.5seconds
+if temp get to some dangerous value, warnings will be sent to the BLE and also printed on serial monitar with colors and 
+with alot of speed.
+if fall is detected (force >4) , warning will be sent through the BLE and warning will be printed through the serial with 
+colors. the force value will be sent and the x y z then it will move to waiting
+in the ble it will wait for 5 seconds then check again if the person fell or not. it will send the x y z values too to
+allow user to check manuallay the numbers
+patien
+if kashif data are requested, using the ble , temp and status will be sent with the acl values x y z
+if the name doest match, ble will send that the name was not found (feedback message)
+
+when ble is connected, ble device will get the message that they are connected . the serial terminal will print that
+the ble device is connected
+if the ble device is disconnected the serial monitor will display that it got disconnected
+
+basically, the ble and serial monitor will dsiaply the nesscary data and are used to give feedbacks to the user
+warnings,data , system status...
